@@ -1,0 +1,205 @@
+{
+  "name": "First flow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": "={{ 8 }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "978fac04-3b7f-424a-84b6-f248b59460bd",
+      "name": "Schedule Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1DTqJaQ7bm7LzU209FFN7ldvmrVgAFeq8qGZcgEQLXwk",
+          "mode": "list",
+          "cachedResultName": "first workflow",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DTqJaQ7bm7LzU209FFN7ldvmrVgAFeq8qGZcgEQLXwk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DTqJaQ7bm7LzU209FFN7ldvmrVgAFeq8qGZcgEQLXwk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "3a512a8e-0032-4a3c-aa3c-37d0ea74f183",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hD59FtlHqUUSjwUH",
+          "name": "Google-Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "abdelazeemahmed337@gmail.com",
+        "subject": "From your soul to you",
+        "emailType": "text",
+        "message": "=Hello Mr. Ahmed please be a polite and do this: \n\n{{ $json.tasksText }}\n\nThanks\nmr. Ahmed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "5caf7bad-25e1-47ae-af46-59ddefdb04d2",
+      "name": "Send a message",
+      "webhookId": "1110f8ed-7418-4539-a8a0-3c0a8b16393d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LUz4uxKf9optL1IH",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tasksText = items\n  .map(item => item.json[\"#\"])\n  .filter(Boolean)   // removes empty values safely\n  .join(\"\\n\");\n\nreturn [\n  {\n    json: {\n      tasksText\n    }\n  }\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a627c506-7b1f-4b55-9d4d-ebce421d8d93",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        112,
+        224
+      ],
+      "id": "eeaa0732-000e-4bf3-a807-03506680614d",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "sendTo": "abdelazeemahmed337@gmail.com",
+        "subject": "= فَإِنَّ مَعَ الْعُسْرِ يُسْرًا، إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+        "emailType": "text",
+        "message": "=\nيقول الأمام علي ابن ابي طالب : \"أنا رجل اعيش بالأمل،فإن تحقق فبفضل الله، وان لم يتحقق فيكفيني أن عشت به زمناً \"\n\nوَإِذْ تَأَذَّنَ رَبُّكُمْ لَئِنْ شَكَرْتُمْ لَأَزِيدَنَّكُمْ وَلَئِنْ كَفَرْتُمْ إِنَّ عَذَابِي لَشَدِيدٌ [إبراهيم: 7]،\n\nالحمد لله حمدا كثيرا طيبا مباركا فيه \nاللهم إنى أسألك من فضلك و رحمتك, فإنه لا يملكها إالا انت",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        224
+      ],
+      "id": "4b92e45b-6c38-448f-9e7c-bbcfb563d069",
+      "name": "Send a message1",
+      "webhookId": "6763b80f-0b5d-415a-865c-f80202c93b54",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LUz4uxKf9optL1IH",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "227b9f15-b1f7-424f-a728-10643e48bcd3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0ce40c2d35de4e0d6941dd7481e40148e86e1114c76cc5fccf19b6c4d1cb9809"
+  },
+  "id": "wJW5PgMg5_3lIrDDVc2UY",
+  "tags": [
+    {
+      "updatedAt": "2026-02-02T23:01:28.362Z",
+      "createdAt": "2026-02-02T23:01:28.362Z",
+      "id": "9mUEcJjncForrcgs",
+      "name": "kareem"
+    }
+  ]
+}
