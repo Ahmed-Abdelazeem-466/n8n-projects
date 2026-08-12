@@ -1,0 +1,341 @@
+{
+  "name": "Sentiment Analysis by form n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Feedback ",
+        "formDescription": "Salta3 Burger Feedback ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Feedback",
+              "placeholder": "Write your feedback here"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "99157cd5-8d87-472a-8b52-0f417ee54598",
+      "name": "On form submission",
+      "webhookId": "1a72fbfe-9a2f-4ac1-b301-eddb72e77c76"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Feedback }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=you are highly intelligent and accurate sentiment analyzer.\nAnalyze the sentiment of the  provided text.\nCategorize it into one of the following: \n[Positive, Negative, Neutral]. Use the provided formatting instructions."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        288,
+        -96
+      ],
+      "id": "95ca3c9e-8250-4531-b1c3-557cdeec2118",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n    \"properties00\":{\n    \t\"state\": {\n        \t\"type\": \"string\",\n              \"description\": \"positive or negative or neutral based on the sentiment analysis\"\n\t}\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        144
+      ],
+      "id": "f9f56804-056d-4817-b3a3-accfe1643d23",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": "nvidia/nemotron-3-nano-30b-a3b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        208,
+        144
+      ],
+      "id": "6168d54c-19f5-4810-b005-610b54d200ba",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "JnGHZ3KrAqtd3r4f",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8184026176",
+        "text": "=we have got a Positive review, we are doing great as the customer said: {{ $('On form submission').item.json.Feedback }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1008,
+        -128
+      ],
+      "id": "1e84a70d-8b52-4559-b1f0-627e4d1ea6a1",
+      "name": "Send a text message",
+      "webhookId": "e6494dc0-dcc6-4971-9280-c2f6dcf5b8a4",
+      "credentials": {
+        "telegramApi": {
+          "id": "UIndJNoPNHwBOwq9",
+          "name": "Reviews Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8184026176",
+        "text": "=we have got a Negative review, we need to solve this problem as fast as we can, because the customer said: {{ $('On form submission').item.json.Feedback }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        -256
+      ],
+      "id": "c50f16b1-ec15-4561-a5c5-634b9b5ecb14",
+      "name": "Send a text message1",
+      "webhookId": "e6494dc0-dcc6-4971-9280-c2f6dcf5b8a4",
+      "credentials": {
+        "telegramApi": {
+          "id": "UIndJNoPNHwBOwq9",
+          "name": "Reviews Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8184026176",
+        "text": "=we have got a Neutral review, we are doing good and they got the expected service as the customer said: {{ $('On form submission').item.json.Feedback }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1168,
+        0
+      ],
+      "id": "5ca5237d-13ab-46a8-aaa0-7a9447a827c4",
+      "name": "Send a text message2",
+      "webhookId": "e6494dc0-dcc6-4971-9280-c2f6dcf5b8a4",
+      "credentials": {
+        "telegramApi": {
+          "id": "UIndJNoPNHwBOwq9",
+          "name": "Reviews Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.sentiment }}",
+                    "rightValue": "Negative",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f41343b1-02a4-4960-b65a-2a7845092406"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Negative"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a27ab876-223c-4207-9652-d46d2fc49485",
+                    "leftValue": "={{ $json.output.sentiment }}",
+                    "rightValue": "Positive",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Positive"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "62b3b157-895d-4638-a1ae-65796d5bcfc0",
+                    "leftValue": "={{ $json.output.sentiment }}",
+                    "rightValue": "Neutral",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Neutral"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        -96
+      ],
+      "id": "09702d0d-bfa0-4922-a8e9-a715d4419168",
+      "name": "Switch"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d33fc623-83a4-4c82-bc63-d497d7c1b79e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0ce40c2d35de4e0d6941dd7481e40148e86e1114c76cc5fccf19b6c4d1cb9809"
+  },
+  "id": "2X3Hw0ZvHnjQd0nR4Elxa",
+  "tags": [
+    {
+      "updatedAt": "2026-02-02T23:01:28.362Z",
+      "createdAt": "2026-02-02T23:01:28.362Z",
+      "id": "9mUEcJjncForrcgs",
+      "name": "kareem"
+    }
+  ]
+}
