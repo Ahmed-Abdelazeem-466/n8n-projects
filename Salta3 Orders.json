@@ -1,0 +1,350 @@
+{
+  "name": "Salta3 Orders",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "ORDERS",
+        "formDescription": "Welcome To Salta3 Burger Restaurant The Best Burger In Bikini Bottom!!! ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Table Number",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Your Order",
+              "fieldType": "checkbox",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Single Burger"
+                  },
+                  {
+                    "option": "Double Burger"
+                  },
+                  {
+                    "option": "Jar Pickles🥒 "
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Customer Phone Number",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -656,
+        48
+      ],
+      "id": "fbc9f94c-1969-4cd8-8a73-75a71fe52548",
+      "name": "On form submission",
+      "webhookId": "b8e12777-0bfa-480a-b708-e9350fa1dcfa"
+    },
+    {
+      "parameters": {
+        "chatId": "1416523715",
+        "text": "=Hello we have a new order:\nthe order number {{ $json['Last Number'] }},\nhas requested {{ $('On form submission').item.json['Your Order'] }}\nat table number {{ $('On form submission').item.json['Table Number'] }} and \nCustomer phone number is: {{ $('On form submission').item.json['Customer Phone Number'] }}\n\nThanks for your attention 😊",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        -176
+      ],
+      "id": "5b8b836c-e4f5-44d6-b6d8-a6a03a8828f5",
+      "name": "Send a text message1",
+      "webhookId": "ee0b5ea8-7bcd-4ba5-87c4-4b6ba5e4185f",
+      "credentials": {
+        "telegramApi": {
+          "id": "KTIjTJlfm1km4iNr",
+          "name": "Salta3 Orders Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk",
+          "mode": "list",
+          "cachedResultName": "Salta3 orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Table Number": "={{ $('On form submission').item.json['Table Number'] }}",
+            "Order": "={{ $('On form submission').item.json['Your Order'] }}",
+            "Customer Phone": "={{ $('On form submission').item.json['Customer Phone Number'] }}",
+            "Time": "={{ $('On form submission').item.json.submittedAt }}",
+            "Order Number": "={{ $json['Last Number'] }}",
+            "Statues": "Under Review"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Order Number",
+              "displayName": "Order Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Order",
+              "displayName": "Order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Table Number",
+              "displayName": "Table Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer Phone",
+              "displayName": "Customer Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Statues",
+              "displayName": "Statues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -80,
+        48
+      ],
+      "id": "91071c06-72e3-4dd3-888b-acdfbee89b25",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hD59FtlHqUUSjwUH",
+          "name": "Google-Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk",
+          "mode": "list",
+          "cachedResultName": "Salta3 orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 567500463,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit#gid=567500463"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Last Number": "={{ $json['Order Number'] +1}}",
+            "row_number": 2
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Last Number",
+              "displayName": "Last Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        48
+      ],
+      "id": "668094d5-76d5-4cf4-997f-8d27d82550a1",
+      "name": "Update row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hD59FtlHqUUSjwUH",
+          "name": "Google-Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk",
+          "mode": "list",
+          "cachedResultName": "Salta3 orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 567500463,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit#gid=567500463"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -400,
+        48
+      ],
+      "id": "201e598c-bdbf-4dc3-972e-0548186bc198",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hD59FtlHqUUSjwUH",
+          "name": "Google-Auth"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ee9681fc-a5f8-4d43-9eb5-c476db0c13e1",
+  "meta": {
+    "instanceId": "0ce40c2d35de4e0d6941dd7481e40148e86e1114c76cc5fccf19b6c4d1cb9809"
+  },
+  "id": "K_p8wPQF1zcnvDf9JUSv5",
+  "tags": [
+    {
+      "updatedAt": "2026-02-24T20:00:03.052Z",
+      "createdAt": "2026-02-24T20:00:03.052Z",
+      "id": "5xkwJ6p98Gk87djP",
+      "name": "Salt3 Restaurant"
+    },
+    {
+      "updatedAt": "2026-02-02T23:01:28.362Z",
+      "createdAt": "2026-02-02T23:01:28.362Z",
+      "id": "9mUEcJjncForrcgs",
+      "name": "kareem"
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "name": "Salt3_Stock",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        -208
+      ],
+      "id": "8a46c322-6644-4d5a-b083-7e0df9d2b791",
+      "name": "Telegram Trigger",
+      "webhookId": "a3da2b9e-155c-436c-983b-5eeb8e0c6732",
+      "credentials": {
+        "telegramApi": {
+          "id": "3VBSOAtPWzjbURa6",
+          "name": "Salta3_Stock_Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  \n  const rawMessage = item.json.message?.text || item.json.text || \"\";\n\n  // NEW Regex breakdown:\n  // ^(\\d+)    -> Grabs the number at the beginning (e.g., \"15\")\n  // \\s+(\\S+)  -> Skips the space, then grabs the next single word (e.g., \"jar\")\n  // \\s+(.+)$  -> Skips the space, then grabs the entire rest of the message (e.g., \"Pickles\")\n  const match = rawMessage.trim().match(/^(\\d+)\\s+(\\S+)\\s+(.+)$/);\n\n  if (match) {\n    // If the message perfectly matches our 3-part format:\n    item.json.quantity = parseInt(match[1], 10); // Forces it into an Integer (15)\n    item.json.unit = match[2].trim();            // The container type (\"jar\")\n    item.json.itemName = match[3].trim();        // The rest of the string (\"Pickles\")\n  } else {\n    // Fallback just in case the message format is wrong\n    item.json.quantity = null; \n    item.json.unit = \"\";\n    item.json.itemName = rawMessage.trim();\n  }\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        -208
+      ],
+      "id": "96f439f6-cfc7-4a22-b768-92b9b939c495",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1QvM3c2GGrSa4X59ADqcF_7AxeJRn7omMGWwdRIK8LCE",
+          "mode": "list",
+          "cachedResultName": "Shafiq_Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QvM3c2GGrSa4X59ADqcF_7AxeJRn7omMGWwdRIK8LCE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QvM3c2GGrSa4X59ADqcF_7AxeJRn7omMGWwdRIK8LCE/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Name",
+              "lookupValue": "={{ $json.itemName }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        256,
+        -208
+      ],
+      "id": "249df0a5-188a-4bfc-ad82-c09344b6c7f5",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hD59FtlHqUUSjwUH",
+          "name": "Google-Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1QvM3c2GGrSa4X59ADqcF_7AxeJRn7omMGWwdRIK8LCE",
+          "mode": "list",
+          "cachedResultName": "Shafiq_Stock",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QvM3c2GGrSa4X59ADqcF_7AxeJRn7omMGWwdRIK8LCE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QvM3c2GGrSa4X59ADqcF_7AxeJRn7omMGWwdRIK8LCE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "ID": "={{ $json.ID }}",
+            "Quantity ": "={{ $json['Quantity '] + $('Code in JavaScript').item.json.quantity }}",
+            "Unit": "={{ $('Code in JavaScript').item.json.unit }}"
+          },
+          "matchingColumns": [
+            "Name"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Quantity ",
+              "displayName": "Quantity ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Unit",
+              "displayName": "Unit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        -208
+      ],
+      "id": "ea4ecd25-0193-43e7-b1d5-e50ae17b0dff",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hD59FtlHqUUSjwUH",
+          "name": "Google-Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "=أبو شفيق حبيبى ياعم الاخطبوطات تم إضافة طلبك و انت معاك دلوقتى فى الاستوك\n{{ $json['Quantity '] }} {{ $json.Unit }} {{ $json.Name }} ",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        -208
+      ],
+      "id": "62021b85-4fe7-4b46-9fe8-76edb7333096",
+      "name": "Send a text message",
+      "webhookId": "a56f9d86-2a10-47dd-b20f-312533b7bacb",
+      "credentials": {
+        "telegramApi": {
+          "id": "3VBSOAtPWzjbURa6",
+          "name": "Salta3_Stock_Telegram"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "13a01c83-e85c-4a06-900f-8b991af1af35",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0ce40c2d35de4e0d6941dd7481e40148e86e1114c76cc5fccf19b6c4d1cb9809"
+  },
+  "id": "2SKyD8o3hwuSVSTTk3VdE",
+  "tags": [
+    {
+      "updatedAt": "2026-02-24T20:00:03.052Z",
+      "createdAt": "2026-02-24T20:00:03.052Z",
+      "id": "5xkwJ6p98Gk87djP",
+      "name": "Salt3 Restaurant"
+    },
+    {
+      "updatedAt": "2026-02-02T23:01:28.362Z",
+      "createdAt": "2026-02-02T23:01:28.362Z",
+      "id": "9mUEcJjncForrcgs",
+      "name": "kareem"
+    }
+  ]
+}

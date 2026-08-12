@@ -1,0 +1,406 @@
+{
+  "name": "Salta3 Orders Review",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -816,
+        96
+      ],
+      "id": "ebf545a2-6d91-4782-928f-bd34d31de1fd",
+      "name": "Telegram Trigger1",
+      "webhookId": "2d8b6f46-ba54-40a3-a4a0-cb5690036b98",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZCk58n7yjSNZ4ZTW",
+          "name": "Salta3 Orders Review status"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "={{ $json.targetNumber }} Done",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "4157a3c2-aeb5-4d23-9a4d-9cc9f9ac9912"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Done"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b4c331bf-2047-482f-98b3-7ac8edc3b9e0",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "={{ $json.targetNumber }} Done",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Not Done"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -272,
+        112
+      ],
+      "id": "7c781499-0e9d-4b12-addf-0f2633811658",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk",
+          "mode": "list",
+          "cachedResultName": "Salta3 orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Statues": "={{ $('Code in JavaScript1').item.json.actionText }}",
+            "row_number": 0,
+            "Order Number": "={{ $('Code in JavaScript1').item.json.targetNumber }}"
+          },
+          "matchingColumns": [
+            "Order Number"
+          ],
+          "schema": [
+            {
+              "id": "Order Number",
+              "displayName": "Order Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Order",
+              "displayName": "Order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Table Number",
+              "displayName": "Table Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer Phone",
+              "displayName": "Customer Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Statues",
+              "displayName": "Statues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        0
+      ],
+      "id": "321488c4-0a68-43cc-b4b6-8c18a0d18590",
+      "name": "Update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hD59FtlHqUUSjwUH",
+          "name": "Google-Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk",
+          "mode": "list",
+          "cachedResultName": "Salta3 orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17wlfuFw_eEGTazA4au_yB1hTo7HyIvCnyJlSHKV8VIk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Statues": "={{ $('Code in JavaScript1').item.json.actionText }}",
+            "Order Number": "={{ $('Code in JavaScript1').item.json.targetNumber }}"
+          },
+          "matchingColumns": [
+            "Order Number"
+          ],
+          "schema": [
+            {
+              "id": "Order Number",
+              "displayName": "Order Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Order",
+              "displayName": "Order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Table Number",
+              "displayName": "Table Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer Phone",
+              "displayName": "Customer Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Statues",
+              "displayName": "Statues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        240
+      ],
+      "id": "9c0fb7f0-3e3d-4217-88ca-feac40326c46",
+      "name": "Update row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hD59FtlHqUUSjwUH",
+          "name": "Google-Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over all incoming items from the Telegram trigger\nfor (const item of $input.all()) {\n  \n  // Safely grab the incoming message text\n  const rawMessage = item.json.message?.text || item.json.text || \"\";\n\n  // Regex breakdown:\n  // ^(\\d+) grabs the numbers at the beginning (e.g., \"4\")\n  // \\s+ skips the space\n  // (.+)$ grabs the rest of the message as the string (e.g., \"cancel\" or \"Done\")\n  const match = rawMessage.trim().match(/^(\\d+)\\s+(.+)$/);\n\n  if (match) {\n    // If the message perfectly matches our 2-part format:\n    item.json.targetNumber = parseInt(match[1], 10); // Forces it into an Integer (4)\n    item.json.actionText = match[2].trim();          // Keeps the text as a String (\"cancel\" or \"Done\")\n  } else {\n    // Fallback just in case the format is wrong\n    item.json.targetNumber = null; \n    item.json.actionText = rawMessage.trim();\n  }\n}\n\n// Return the items to pass along to the next node\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        96
+      ],
+      "id": "c140bdf3-0565-45b5-8e9d-94c2a9e7e2d4",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "82d4116c-013a-40e5-8bf4-9c7634d5977e",
+  "meta": {
+    "instanceId": "0ce40c2d35de4e0d6941dd7481e40148e86e1114c76cc5fccf19b6c4d1cb9809"
+  },
+  "id": "cnbyF5wDOTJ-UM_zf2TPe",
+  "tags": [
+    {
+      "updatedAt": "2026-02-24T20:00:03.052Z",
+      "createdAt": "2026-02-24T20:00:03.052Z",
+      "id": "5xkwJ6p98Gk87djP",
+      "name": "Salt3 Restaurant"
+    },
+    {
+      "updatedAt": "2026-02-02T23:01:28.362Z",
+      "createdAt": "2026-02-02T23:01:28.362Z",
+      "id": "9mUEcJjncForrcgs",
+      "name": "kareem"
+    }
+  ]
+}
